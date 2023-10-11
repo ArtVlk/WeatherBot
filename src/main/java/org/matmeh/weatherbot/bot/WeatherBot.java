@@ -19,7 +19,7 @@ public class WeatherBot extends TelegramLongPollingCommandBot {
     private final WeatherService weatherService;
 
     public WeatherBot(StartCommand startCommand, WeatherCommand weatherCommand, WeatherService weatherService) {
-        super("6657154445:AAEu8tORRcbzZ8SEk5EhVVcis36sgGCHsWg");
+        super("BotToken");
 
         this.weatherService = weatherService;
         registerAll(startCommand, weatherCommand);
@@ -70,6 +70,6 @@ public class WeatherBot extends TelegramLongPollingCommandBot {
 
     @Override
     public String getBotUsername() {
-        return "artemis_bootbot";
+        return "namebot";
     }
 }

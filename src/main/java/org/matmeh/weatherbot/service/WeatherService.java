@@ -39,7 +39,7 @@ public class WeatherService {
         try {
             String weather = httpWeatherClient
                     .get()
-                    .uri("/weather?q=" + city + "&appid=68c759cf1f7c764454e6af8aa88b049c&units=metric&lang=ru")
+                    .uri("/weather?q=" + city + "&appid=API_OpenWeather=metric&lang=ru")
                     .retrieve()
                     .body(WeatherResponse.class)
                     .getWeather();
@@ -60,7 +60,7 @@ public class WeatherService {
 
         return httpCityClient
                 .get()
-                .uri("/json?q=" + latitude + "," + longitude + "&key=13518bc35d664d7da39fd63e71dc2550&language=ru")
+                .uri("/json?q=" + latitude + "," + longitude + "&key=API_OpenCage&language=ru")
                 .retrieve()
                 .body(CityResponse.class)
                 .getCity();
