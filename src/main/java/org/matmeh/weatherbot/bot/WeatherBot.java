@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.matmeh.weatherbot.commands.StartCommand;
 import org.matmeh.weatherbot.commands.WeatherCommand;
 import org.matmeh.weatherbot.service.WeatherService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,11 +18,16 @@ import static org.matmeh.weatherbot.commands.WeatherCommand.locationRequest;
 @Component
 public class WeatherBot extends TelegramLongPollingCommandBot {
     private final WeatherService weatherService;
+    private String botName;
+    private String BotToken;
+    public WeatherBot(StartCommand startCommand, WeatherCommand weatherCommand, WeatherService weatherService,
+                      @Value("${bot.name}") String botName, @Value("${bot.token}") String BotToken) {
+        super(BotToken);
 
-    public WeatherBot(StartCommand startCommand, WeatherCommand weatherCommand, WeatherService weatherService) {
-        super("BotToken");
-
+        this.botName = botName;
+        this.BotToken = BotToken;
         this.weatherService = weatherService;
+
         registerAll(startCommand, weatherCommand);
     }
 
@@ -70,6 +76,6 @@ public class WeatherBot extends TelegramLongPollingCommandBot {
 
     @Override
     public String getBotUsername() {
-        return "namebot";
+        return botName;
     }
 }
