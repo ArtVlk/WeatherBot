@@ -33,15 +33,13 @@ public class WeatherService {
 
         return getWeather(city);
     }
-    @Value("${bot.Api_OpenWeather}")
-    private String Api_OpenWeather;
     public String getWeather(String city) {
         log.trace("Getting weather for city: {}", city);
 
         try {
             String weather = httpWeatherClient
                     .get()
-                    .uri("/weather?q=" + city + "&appid=" + Api_OpenWeather + "&units=metric&lang=ru")
+                    .uri("/weather?q=" + city + "&appid=Api_OpenWeather&units=metric&lang=ru")
                     .retrieve()
                     .body(WeatherResponse.class)
                     .getWeather();
@@ -56,14 +54,12 @@ public class WeatherService {
 
         return "Не удается получить прогноз погоды для " + city + ". Пожалуйста, попробуйте еще раз.";
     }
-    @Value("${bot.API_OpenCage}")
-    private String API_OpenCage;
     private String getCityByLocation(double latitude, double longitude) {
         log.trace("Getting city for coords: {}, {}", latitude, longitude);
 
         return httpCityClient
                 .get()
-                .uri("/json?q=" + latitude + "," + longitude + "&key="+API_OpenCage+"&language=ru")
+                .uri("/json?q=" + latitude + "," + longitude + "&key=API_OpenCage&language=ru")
                 .retrieve()
                 .body(CityResponse.class)
                 .getCity();

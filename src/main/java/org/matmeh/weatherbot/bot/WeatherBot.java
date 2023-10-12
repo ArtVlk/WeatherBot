@@ -17,15 +17,9 @@ import static org.matmeh.weatherbot.commands.WeatherCommand.locationRequest;
 
 @Component
 public class WeatherBot extends TelegramLongPollingCommandBot {
-    private final WeatherService weatherService;
-    private String botName;
-    private String BotToken;
-    public WeatherBot(StartCommand startCommand, WeatherCommand weatherCommand, WeatherService weatherService,
-                      @Value("${bot.name}") String botName, @Value("${bot.token}") String BotToken) {
-        super(BotToken);
-
-        this.botName = botName;
-        this.BotToken = BotToken;
+    private final WeatherService weatherService;n;
+    public WeatherBot(StartCommand startCommand, WeatherCommand weatherCommand, WeatherService weatherService){
+        super("BotToken");
         this.weatherService = weatherService;
 
         registerAll(startCommand, weatherCommand);
@@ -76,6 +70,6 @@ public class WeatherBot extends TelegramLongPollingCommandBot {
 
     @Override
     public String getBotUsername() {
-        return botName;
+        return "botName";
     }
 }
