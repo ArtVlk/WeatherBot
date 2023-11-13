@@ -49,6 +49,7 @@ public class WeatherCommand extends BaseCommand {
         KeyboardButton button = new KeyboardButton();
         button.setText(cityRequest);
 
+        row.add("/start");
         row.add(button);
         row.add(locationButton);
 

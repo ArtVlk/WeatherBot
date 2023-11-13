@@ -44,6 +44,7 @@ public class StartCommand extends BaseCommand {
 
         row.add("/start");
         row.add("/weather");
+        row.add("/profile");
 
         keyboardRows.add(row);
         replyKeyboardMarkup.setKeyboard(keyboardRows);

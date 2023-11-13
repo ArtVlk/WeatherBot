@@ -13,8 +13,8 @@ public class WeatherBotApplication {
     @SneakyThrows
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(WeatherBotApplication.class, args);
-
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(ctx.getBean(WeatherBot.class));
     }
+
 }
