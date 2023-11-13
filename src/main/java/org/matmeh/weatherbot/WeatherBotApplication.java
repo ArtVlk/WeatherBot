@@ -2,11 +2,16 @@ package org.matmeh.weatherbot;
 
 import lombok.SneakyThrows;
 import org.matmeh.weatherbot.bot.WeatherBot;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+
+import org.springframework.context.annotation.PropertySource;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+
+
 
 @SpringBootApplication
 public class WeatherBotApplication {

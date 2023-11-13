@@ -1,11 +1,15 @@
 package org.matmeh.weatherbot.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.matmeh.weatherbot.BotProperties;
 import org.matmeh.weatherbot.dto.CityResponse;
 import org.matmeh.weatherbot.dto.WeatherResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,11 +17,20 @@ import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
+@Configuration
 public class WeatherService {
+
+    private final BotProperties botProperties;
+    private final String API_OpenCage;
+    private final String API_OpenWeather;
     private final RestClient httpCityClient;
     private final RestClient httpWeatherClient;
 
-    public WeatherService(RestClient.Builder restClientBuilder) {
+    public WeatherService(RestClient.Builder restClientBuilder, BotProperties botProperties) {
+        this.botProperties = botProperties;
+        this.API_OpenCage = botProperties.getAPIOpenCage();
+        this.API_OpenWeather = botProperties.getAPIOpenWeather();
+
         httpCityClient = restClientBuilder.baseUrl("https://api.opencagedata.com/geocode/v1").build();
         httpWeatherClient = restClientBuilder.baseUrl("https://api.openweathermap.org/data/2.5").build();
     }
@@ -42,7 +55,7 @@ public class WeatherService {
         try {
             String weather = httpWeatherClient
                     .get()
-                    .uri("/weather?q=" + city + "&appid=68c759cf1f7c764454e6af8aa88b049c&units=metric&lang=ru")
+                    .uri("/weather?q=" + city + "&appid=" + API_OpenWeather + "&units=metric&lang=ru")
                     .retrieve()
                     .body(WeatherResponse.class)
                     .getWeather();
@@ -65,7 +78,7 @@ public class WeatherService {
         try {
             String weather = httpWeatherClient
                     .get()
-                    .uri("/weather?q=" + city + "&appid=щ&units=metric&lang=ru")
+                    .uri("/weather?q=" + city + "&appid=" + API_OpenWeather + "&units=metric&lang=ru")
                     .retrieve()
                     .body(WeatherResponse.class)
                     .getWeather();
@@ -86,7 +99,7 @@ public class WeatherService {
 
         return httpCityClient
                 .get()
-                .uri("/json?q=" + latitude + "," + longitude + "&key=щ&language=ru")
+                .uri("/json?q=" + latitude + "," + longitude + "&key=" + API_OpenCage + "&language=ru")
                 .retrieve()
                 .body(CityResponse.class)
                 .getCity();

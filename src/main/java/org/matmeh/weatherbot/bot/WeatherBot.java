@@ -2,9 +2,11 @@ package org.matmeh.weatherbot.bot;
 
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
+import org.matmeh.weatherbot.BotProperties;
 import org.matmeh.weatherbot.commands.*;
 import org.matmeh.weatherbot.service.WeatherService;
 import org.matmeh.weatherbot.service.UserChat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -20,24 +22,23 @@ import static org.matmeh.weatherbot.commands.ProfileCommand.createRequest;
 @Component
 @Configuration
 public class WeatherBot extends TelegramLongPollingCommandBot {
-
-    @Value("${myapp.api.key}")
-    private String apiKey;
     private final WeatherService weatherService;
     private final ProfileCommand profileCommand;
     private final UserChat userChat;
+    private final BotProperties botProperties;
     private boolean addCity = false;
     private boolean getWeather = false;
+    @Value("${bot.token}")
+    private String botToken;
 
-    public WeatherBot(StartCommand startCommand, WeatherCommand weatherCommand, ProfileCommand profileCommand, WeatherService weatherService, UserChat userChat) {
-        super("apiKey");
-
+    @Autowired
+    public WeatherBot(StartCommand startCommand, WeatherCommand weatherCommand, ProfileCommand profileCommand, WeatherService weatherService, UserChat userChat, BotProperties botProperties) {
         this.weatherService = weatherService;
         this.profileCommand = profileCommand;
         this.userChat = userChat;
         registerAll(startCommand, weatherCommand, profileCommand);
+        this.botProperties = botProperties;
     }
-
     @SneakyThrows
     @Override
     public void processNonCommandUpdate(@NotNull Update update) {
@@ -119,6 +120,11 @@ public class WeatherBot extends TelegramLongPollingCommandBot {
 
     @Override
     public String getBotUsername() {
-        return "apiKey";
+        return botProperties.getBotName();
+    }
+
+    @Override
+    public String getBotToken() {
+        return botProperties.getBotToken();
     }
 }

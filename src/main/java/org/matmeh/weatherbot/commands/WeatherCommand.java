@@ -1,5 +1,7 @@
 package org.matmeh.weatherbot.commands;
 
+import org.matmeh.weatherbot.BotProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Component
 public class WeatherCommand extends BaseCommand {
+
     public static final String locationRequest = "Send location";
     public static final String cityRequest = "Enter city";
 
