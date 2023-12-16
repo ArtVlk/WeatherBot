@@ -15,7 +15,6 @@ public abstract class BaseCommand implements IBotCommand {
     @Override
     public void processMessage(AbsSender absSender, Message message, String[] arguments) {
         absSender.execute(answer(absSender, message));
-
         log.debug("@{}: /{} - successfully", message.getChat().getUserName(), getCommandIdentifier());
     }
 }
