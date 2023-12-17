@@ -12,27 +12,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class CreateCommand extends BaseCommand {
+public class AddCityCommand extends BaseCommand {
 
     public static final String locationRequest = "Send location";
     public static final String cityRequest = "Enter city";
 
     @Override
     public String getCommandIdentifier() {
-        return "create";
+        return "add";
     }
 
     @Override
     public String getDescription() {
-        return "Ввести данные для профиля пользователя";
+        return "Add a new city to your profile";
     }
-
 
     @Override
     public SendMessage answer(AbsSender bot, Message message) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(message.getChat().getId());
-        sendMessage.setText("Выберите способ ввода города:");
+        sendMessage.setText("Выберите способ добавления нового города:");
         sendMessage.setReplyMarkup(createKeyboard());
 
         return sendMessage;
@@ -47,15 +46,16 @@ public class CreateCommand extends BaseCommand {
         locationButton.setText(locationRequest);
         locationButton.setRequestLocation(true);
 
-        KeyboardButton button = new KeyboardButton();
-        button.setText(cityRequest);
+        KeyboardButton cityButton = new KeyboardButton();
+        cityButton.setText(cityRequest);
 
-        row.add(button);
+        row.add("/start");
+        row.add(cityButton);
         row.add(locationButton);
 
         keyboard.add(row);
         replyKeyboardMarkup.setKeyboard(keyboard);
-        replyKeyboardMarkup.setOneTimeKeyboard(true);  // Показывать клавиатуру только один раз
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
 
         return replyKeyboardMarkup;
     }
