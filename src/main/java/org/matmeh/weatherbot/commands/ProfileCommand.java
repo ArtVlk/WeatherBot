@@ -12,9 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @Component
@@ -55,7 +53,7 @@ public class ProfileCommand extends BaseCommand {
 
         return sendMessage;
     }
-    public static ReplyKeyboardMarkup createProfileAndCityKeyboard(List<String> cities) {
+    private ReplyKeyboardMarkup createProfileAndCityKeyboard(List<String> cities) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
@@ -72,11 +70,7 @@ public class ProfileCommand extends BaseCommand {
 
         keyboard.add(row);
 
-        Set<String> set = new HashSet<>();
         for (String city : cities) {
-            set.add(city);
-        }
-        for (String city : set) {
             row = new KeyboardRow();
             KeyboardButton cityButton = new KeyboardButton(city);
             row.add(cityButton);
