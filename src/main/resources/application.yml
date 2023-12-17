@@ -10,6 +10,7 @@ spring:
 
 API.OpenCage: 13518bc35d664d7da39fd63e71dc2550
 API.OpenWeather: 9b4efa636cbceccee55379f46e025620
+
 url.BD: jdbc:mysql://localhost:3306/idcity
 user.BD: root
 password.BD: 12345
