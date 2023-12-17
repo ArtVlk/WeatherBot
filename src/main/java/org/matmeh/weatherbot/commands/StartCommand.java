@@ -43,7 +43,6 @@ public class StartCommand extends BaseCommand {
         KeyboardRow row = new KeyboardRow();
 
         row.add("/start");
-        row.add("/weather_now");
         row.add("/weather");
         row.add("/profile");
 

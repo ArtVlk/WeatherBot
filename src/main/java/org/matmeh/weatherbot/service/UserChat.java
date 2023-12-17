@@ -1,36 +1,41 @@
 package org.matmeh.weatherbot.service;
 
 import lombok.Getter;
+import org.matmeh.weatherbot.BotProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.time.LocalTime;
 import java.util.*;
 
 @Service
 @Getter
 @Component
 public class UserChat {
+    private final BotProperties botProperties;
     private final WeatherService weatherService;
     private final UserChat userChat;
     public Map<Long, List<String>> cityMap;
     HashMap<String, Boolean> enterCommand = new HashMap<>();
 
-    private final String url = "your url";
+    private final String url;
 
-    private final String user = "your name";
+    private final String user;
 
-    private final String password = "your password";
+    private final String password;
 
     @Autowired
-    public UserChat(WeatherService weatherService) {
+    public UserChat(WeatherService weatherService, BotProperties botProperties) {
         this.weatherService = weatherService;
+        this.botProperties = botProperties;
         this.userChat = this;
         this.cityMap = new HashMap<>();
         this.enterCommand.put("addCityCommand", false);
         this.enterCommand.put("getWeatherCommand", false);
+        url = botProperties.getUrlBD();
+        user = botProperties.getUserBD();
+        password = botProperties.getPasswordBD();
     }
 
 
@@ -96,48 +101,6 @@ public class UserChat {
         }
     }
 
-    public void setUserTimeForCity(Long userId, String city, LocalTime time) {
-        int timeAsInt = convertTimeToInt(time);
-        try (Connection conn = getConnection()) {
-            String sql = "UPDATE new_table SET time = ? WHERE id = ? AND city = ?";
-            try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setInt(1, timeAsInt);
-                statement.setLong(2, userId);
-                statement.setString(3, city);
-                statement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            handleSQLException(e);
-        }
-    }
-
-    public void removeUserTime(Long userId) {
-        try (Connection conn = getConnection()) {
-            String sql = "UPDATE new_table SET time = NULL WHERE id = ?";
-            try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setLong(1, userId);
-                statement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            handleSQLException(e);
-        }
-    }
-
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
-    }
-
-    private void handleSQLException(SQLException e) {
-        // Log the exception or throw a custom exception
-        e.printStackTrace();
-        // You might also want to throw a custom exception or notify the user
-    }
-
-    private int convertTimeToInt(LocalTime time) {
-        int hours = time.getHour();
-        int minutes = time.getMinute();
-        return hours * 100 + minutes; // Преобразование в формат "HHMM"
-    }
 
     public String getCityList(Long userId) {
         List<String> cities = cityMap.get(userId);
@@ -176,11 +139,10 @@ public class UserChat {
             statement.setLong(1, userId);
             statement.setString(2, city);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next(); // If the result set has a next entry, the city exists for the user
+            return resultSet.next();
         } catch (SQLException e) {
-            // Handle the SQL exception
             e.printStackTrace();
-            return false; // Return false in case of an exception
+            return false;
         }
     }
 }

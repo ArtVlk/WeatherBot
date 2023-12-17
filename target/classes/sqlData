@@ -1,0 +1,3 @@
+jdbc:mysql://localhost:3306/idcity
+root
+12345

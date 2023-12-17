@@ -66,14 +66,12 @@ public class WeatherService {
 
     public boolean doesCityExist(String city) {
         try {
-            System.out.println("https://api.openweathermap.org/data/2.5"+ "/weather?q=" + city + "&appid=" + API_OpenWeather + "&units=metric&lang=ru");
             String weather = httpWeatherClient
                     .get()
                     .uri("/weather?q=" + city + "&APPID=" + API_OpenWeather + "&units=metric&lang=ru")
                     .retrieve()
                     .body(WeatherResponse.class)
                     .getWeather();
-            System.out.println(weather);
             if (weather != null && !weather.isBlank()) {
                 return true;
             }

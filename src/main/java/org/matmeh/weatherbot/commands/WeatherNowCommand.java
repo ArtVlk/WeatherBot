@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMess
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 
@@ -38,16 +39,22 @@ public class WeatherNowCommand extends BaseCommand {
         Long userId = message.getFrom().getId();
         List<String> cities = userChat.getCitiesFromDatabase(userId);
         if (cities != null && !cities.isEmpty()) {
-            StringBuilder weatherInfo = new StringBuilder("Прогноз погоды для ваших городов:\n\n");
             for (String city : cities){
                 String cityWeather = weatherService.getWeather(city);
-                weatherInfo.append(city).append(": \n").append(cityWeather).append("\n\n");
+                SendMessage cityWeatherMessage = new SendMessage();
+                cityWeatherMessage.setChatId(message.getChat().getId());
+                cityWeatherMessage.setText(cityWeather);
+                try {
+                    bot.execute(cityWeatherMessage);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
             }
-            sendMessage.setText(weatherInfo.toString());
+        } else {
+            sendMessage.setText("У вас не создан профиль. Нужно добавить города добавьте города в /profile");
             return sendMessage;
         }
-        sendMessage.setText("У вас не создан профиль. Нужно добавить города добавьте города в /profile");
-        return sendMessage;
+        return null; // Возвращаем null, так как сообщения для каждого города отправляются отдельно
     }
 
 }

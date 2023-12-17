@@ -55,7 +55,7 @@ public class AddCityCommand extends BaseCommand {
 
         keyboard.add(row);
         replyKeyboardMarkup.setKeyboard(keyboard);
-        replyKeyboardMarkup.setOneTimeKeyboard(true);  // Show the keyboard only once
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
 
         return replyKeyboardMarkup;
     }
