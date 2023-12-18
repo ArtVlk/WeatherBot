@@ -54,7 +54,7 @@ public class WeatherNowCommand extends BaseCommand {
             sendMessage.setText("У вас не создан профиль. Нужно добавить города добавьте города в /profile");
             return sendMessage;
         }
-        return null; // Возвращаем null, так как сообщения для каждого города отправляются отдельно
+        return sendMessage; // Возвращаем null, так как сообщения для каждого города отправляются отдельно
     }
 
 }

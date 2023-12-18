@@ -53,7 +53,7 @@ public class ProfileCommand extends BaseCommand {
 
         return sendMessage;
     }
-    private ReplyKeyboardMarkup createProfileAndCityKeyboard(List<String> cities) {
+    public static ReplyKeyboardMarkup createProfileAndCityKeyboard(List<String> cities) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
