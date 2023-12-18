@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,6 +17,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Slf4j
@@ -105,14 +109,14 @@ public class WeatherService {
 
         return "Не удается получить прогноз погоды для  города " + city + ". Пожалуйста, попробуйте еще раз.";
     }
-    public String getWeatherForFiveDays(String city) {
-        log.trace("Getting weather for city for next five days: {}", city);
+    public List<SendMessage> getWeatherForFiveDays(String city, Message message) {
+        log.trace("Getting weather for next five days: {}", city);
 
-        StringBuilder resultBuilder = new StringBuilder();
-        resultBuilder.append("Прогноз погоды на 5 дней для города " + city + ":\n");
+        List<String> weatherDetailsList = new ArrayList<>();
+        List<SendMessage> weatherMessages = new ArrayList<>();
 
         try {
-            URL url = new URL( "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + API_OpenWeather + "&units=metric&lang=ru");
+            URL url = new URL("https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + API_OpenWeather + "&units=metric&lang=ru");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             int responseCode = conn.getResponseCode();
@@ -127,22 +131,31 @@ public class WeatherService {
                 }
                 in.close();
 
-                String weatherDetails = WeatherResponse.getWeatherFive(city, response);
-                if (weatherDetails != null && !weatherDetails.isBlank()) {
-                    resultBuilder.append(weatherDetails + "\n");
+                List<String> cityWeatherList = WeatherResponse.WeatherForFiveDays(city, response); // Используем вашу утилиту для формирования списка прогноза погоды
+                if (!cityWeatherList.isEmpty()) {
+                    for (String dayWeather : cityWeatherList) {
+                        SendMessage cityWeatherMessage = new SendMessage();
+                        cityWeatherMessage.setChatId(message.getChatId());
+                        cityWeatherMessage.setText(dayWeather);
+                        weatherMessages.add(cityWeatherMessage);
+                    }
                 }
+
             } else {
                 log.warn("Got an empty response from the Weather API for city {}", city);
             }
 
-            return resultBuilder.toString();
-
         } catch (Exception exception) {
             log.error("Error in WeatherService::getWeatherForFiveDays", exception);
+            SendMessage errorMessage = new SendMessage();
+            errorMessage.setChatId(message.getChatId().toString());
+            errorMessage.setText("Произошла ошибка при получении прогноза погоды для " + city + ".");
+            weatherMessages.add(errorMessage);
         }
 
-        return "Не удается получить прогноз погоды на 5 дней для города " + city + ".\nПожалуйста, попробуйте еще раз.";
+        return weatherMessages;
     }
+
     protected String getCityByLocation(double latitude, double longitude) {
         log.trace("Getting city for coords: {}, {}", latitude, longitude);
 
