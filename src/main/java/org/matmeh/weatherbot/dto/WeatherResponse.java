@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,47 +30,34 @@ public class WeatherResponse {
                 "Скорость ветра: " + wind.get("speed") + " м/с";
 
     }
-    public static List<String> WeatherForFiveDays(String city, StringBuffer response) {
-        List<String> result = new ArrayList<>();
+    public static String getWeatherFive(String city, StringBuffer response) {
+        JSONObject jsonObject = new JSONObject(response.toString());
+        JSONArray list = jsonObject.getJSONArray("list");
+        StringBuilder resultBuilder = new StringBuilder();
+        for (int i = 0; i < 40; i += 8) { // считывается прогноз каждые 3 часа, поэтому считываем только 1 раз в день
+            JSONObject dayForecast = list.getJSONObject(i);
+            String dateTimeText = dayForecast.getString("dt_txt");
+            String dateText = dateTimeText.substring(0, dateTimeText.indexOf(' '));
+            JSONObject main = dayForecast.getJSONObject("main");
+            double temp = main.getDouble("temp");
+            double feelsLike = main.getDouble("feels_like");
+            int pressure = (main.getInt("pressure"));
+            pressure = (int) (pressure * (0.75));
+            int humidity = main.getInt("humidity");
+            JSONArray weatherArray = dayForecast.getJSONArray("weather");
+            JSONObject weatherData = weatherArray.getJSONObject(0);
+            String weatherDescription = weatherData.getString("description");
+            JSONObject wind = dayForecast.getJSONObject("wind");
+            double windSpeed = wind.getDouble("speed");
 
-        try {
-            JSONObject jsonObject = new JSONObject(response.toString());
-            JSONArray list = jsonObject.getJSONArray("list");
-
-            for (int i = 0; i < 5; i++) {
-                StringBuilder resultBuilder = new StringBuilder();
-                resultBuilder.append( city).append("\n\n");
-                JSONObject dayForecast = list.getJSONObject(i * 8); // Получаем информацию о погоде для каждого 8-го элемента (это примерно раз в день)
-
-                String dateTimeText = dayForecast.getString("dt_txt");
-                String dateText = dateTimeText.substring(0, dateTimeText.indexOf(' '));
-                JSONObject main = dayForecast.getJSONObject("main");
-                double temp = main.getDouble("temp");
-                double feelsLike = main.getDouble("feels_like");
-                int pressure = (int) (main.getInt("pressure") * 0.75);
-                int humidity = main.getInt("humidity");
-                JSONArray weatherArray = dayForecast.getJSONArray("weather");
-                JSONObject weatherData = weatherArray.getJSONObject(0);
-                String weatherDescription = weatherData.getString("description");
-                JSONObject wind = dayForecast.getJSONObject("wind");
-                double windSpeed = wind.getDouble("speed");
-
-                // Формирование строки с информацией о погоде
-                resultBuilder.append("Дата: ").append(dateText).append("\n")
-                        .append("Температура: ").append(temp).append("C\u00B0 (Ощущается, как ").append(feelsLike).append("C\u00B0)").append("\n")
-                        .append(weatherDescription).append("\n")
-                        .append("Атмосферное давление: ").append(pressure).append(" мм.рт.ст.").append("\n")
-                        .append("Влажность воздуха: ").append(humidity).append("%").append("\n")
-                        .append("Скорость ветра: ").append(windSpeed).append(" м/с");
-
-                result.add(resultBuilder.toString());
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+            resultBuilder.append("\nДата: " + dateText + "\n"
+                    + "Температура: " + temp + "C° (Ощущается, как " + feelsLike + "C°)" + "\n"
+                    + weatherDescription + "\n"
+                    + "Атмосферное давление: " + pressure + " мм.рт.ст.\n"
+                    + "Влажность воздуха: " + humidity + "%\n"
+                    + "Скорость ветра: " + windSpeed + " м/с\n");
         }
-
-        return result;
+        return String.valueOf(resultBuilder);
     }
 
 }
