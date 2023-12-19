@@ -69,6 +69,12 @@ public class ProfileCommand extends BaseCommand {
         row.add(remCityButton);
 
         keyboard.add(row);
+        /*
+        Set<String> set = new HashSet<>();
+        for (String city : cities) {
+            set.add(city);
+        }
+         */
 
         for (String city : cities) {
             row = new KeyboardRow();
